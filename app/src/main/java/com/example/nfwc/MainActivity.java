@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
     Button btnWrite;
     Button testButton;
     WifiBroadcastReceiver wifiConnect=null;
+    private Intent intent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,10 @@ public class MainActivity extends Activity {
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
+
+        setContentView(R.layout.activity_main);
+        intent = new Intent(this, PlayerService.class);
+        startService(intent);// 启动服务
     }
 
 
@@ -207,5 +212,10 @@ public class MainActivity extends Activity {
     private void WriteModeOff(){
         writeMode = false;
         nfcAdapter.disableForegroundDispatch(this);
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(intent);// 在退出Activity时停止该服务
     }
 }
